@@ -82,23 +82,26 @@ body{
 
 .btn-login{
 
-    width:100%;
+    width:80%;
 
-    background:#fb641b;
+    background:#0d6efd;
 
     color:white;
 
     height:48px;
 
     border:none;
+    border-radius: 10px;
 
     font-size:18px;
+    display:block;
+    margin: 20px auto;
 
 }
 
 .btn-login:hover{
 
-    background:#e85a15;
+    background:#0b5ed7;
 
 }
 

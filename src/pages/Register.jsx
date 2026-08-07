@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+
 import api from "../services/api";
 
 function Register() {
 
     const navigate = useNavigate();
+	
+	const [otp, setOtp] = useState("");
+	const [showOtpBox, setShowOtpBox] = useState(false);
+	const [otpVerified, setOtpVerified] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -83,11 +90,85 @@ function Register() {
 
     };
 
-    const googleRegister = () =>{
+    const handleGoogleSuccess = async (credentialResponse) => {
 
-        alert("Google Registration Coming Soon");
+		    try {
 
-    };
+				const response = await axios.post(
+				    "http://localhost:8080/api/auth/google",
+				    {
+				        token: credentialResponse.credential
+				    }
+				);
+
+				/*localStorage.setItem("token", response.data.token);
+				localStorage.setItem("user", JSON.stringify(response.data.user));*/
+
+				localStorage.setItem("token", response.data.jwt);
+			    localStorage.setItem(
+							     "user",
+							     JSON.stringify({
+							         name: response.data.username
+							     }));
+				navigate("/");
+
+		    } catch (error) {
+
+		        console.error(error);
+
+		        alert("Google Login Failed");
+
+		    }
+
+		};
+		
+		
+		
+
+		const sendOtp = async () => {
+
+		    try{
+
+		        await axios.post(
+		            "http://localhost:8080/api/auth/send-otp",
+		            {
+		                email: from.email
+		            }
+		        );
+
+		        alert("OTP Sent Successfully");
+
+		        setShowOtpBox(true);
+
+		    }catch(error){
+
+		        alert("Unable to send OTP");
+		    }
+		};
+		
+		const verifyOtp = async()=>{
+
+		    try{
+
+		        const response = await axios.post(
+
+		        "http://localhost:8080/api/auth/verify-otp",
+
+		        {
+		            email:email,
+		            otp:otp
+		        });
+
+		        alert(response.data);
+
+		        setOtpVerified(true);
+
+		    }catch(error){
+
+		        alert("Invalid OTP");
+		    }
+
+		}
 
     return(
 
@@ -165,11 +246,33 @@ function Register() {
                                 className="form-control"
                                 type="email"
                                 name="email"
+								placeholder="Enter Email"
                                 value={form.email}
                                 onChange={handleChange}
                                 required
                             />
+							<button onClick={sendOtp}>
+							   Send OTP
+							</button>
+							{
+							showOtpBox &&
 
+							<div>
+
+							<input
+							type="text"
+							placeholder="Enter OTP"
+							value={otp}
+							onChange={(e)=>setOtp(e.target.value)}
+							/>
+
+							<button onClick={verifyOtp}>
+							Verify OTP
+							</button>
+
+							</div>
+
+							}
                         </div>
 
                         <div className="mb-3">
@@ -259,6 +362,8 @@ function Register() {
                         <button
                             className="btn-login"
                             type="submit"
+							disabled={!otpVerified}
+							//onClick={register}
                         >
 
                             Register
@@ -269,19 +374,17 @@ function Register() {
 
                     <hr/>
 
-                    <button
-                        className="google-btn"
-                        onClick={googleRegister}
-                    >
-
-                        <FaGoogle
-                            color="red"
-                            size={20}
-                        />
-
-                        Continue with Google
-
-                    </button>
+					<div className="d-flex justify-content-center mt-3">
+					 <GoogleLogin onSuccess={(credentialResponse) => 
+						{ 
+							console.log(credentialResponse); 
+							console.log(jwtDecode(credentialResponse.credential));
+							 handleGoogleSuccess(credentialResponse); }} 
+							 onError={() => { 
+								alert("Google Login Failed"); 
+							}} /> </div>
+					             
+                  
 
                     <div className="bottom-text">
 

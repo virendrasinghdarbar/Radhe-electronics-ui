@@ -1,9 +1,9 @@
 
 import Navbar from "../components/Navbar";
-import Banner from "../components/Banner";
 import CategorySection from "../components/CategorySection";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
+import Banner from "../components/Banner";
 
 
 function Home(){
@@ -15,8 +15,8 @@ function Home(){
 			
             <Navbar/>
 	
-            <Banner/>
-
+		    <Banner/>
+	
             <CategorySection/>
 
             <ProductCard/>

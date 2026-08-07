@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import authService from "../services/authService";
 import {useAuth} from "../context/AuthContext";
+
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+//import { useNavigate } from "react-router-dom";
 
 function Login() {
 
@@ -35,35 +40,60 @@ function Login() {
 
 
 		try{
+			const response = await authService.login(form);
 
-		const response=await authService.login(
+			      localStorage.setItem("token", response.data.token); // or response.data.jwt
 
-		form.email,
+			      localStorage.setItem(
+			          "user",
+			          JSON.stringify({
+			              name: response.data.username // or response.data.username
+			          })
+			      );
 
-		form.password
+			      navigate("/");
 
-		);
-
-		auth.login(response.token);
-
-		navigate("/dashboard");
-
-		}catch(error){
-
-		alert("Invalid Email or Password");
-
-		}
+			  } catch (error) {
+			      alert("Invalid Email or Password");
+			  }
 
 		};
 
-    const loginWithGoogle = () => {
-
-        // We will integrate Google OAuth in Part 5
-        alert("Google Login Coming Soon By DarbarTeam");
-
-    };
+		
+   
 	
-	
+
+	const handleGoogleSuccess = async (credentialResponse) => {
+
+	    try {
+
+			const response = await axios.post(
+			    "http://localhost:8080/api/auth/google",
+			    {
+			        token: credentialResponse.credential
+			    }
+			);
+
+			localStorage.setItem("token", response.data.token); // or jwt
+
+			localStorage.setItem(
+			    "user",
+			    JSON.stringify({
+			        name: response.data.username // or username
+			    })
+			);
+
+			navigate("/");
+
+	    } catch (error) {
+
+	        console.error(error);
+
+	        alert("Google Login Failed");
+
+	    }
+
+	};
 
 	
 	
@@ -190,20 +220,27 @@ function Login() {
 
                     <hr />
 
-                    <button
-                        className="google-btn"
-                        onClick={loginWithGoogle}
-                    >
+					<div className="d-flex justify-content-center mt-3">
 
-                        <FaGoogle
-                            color="red"
-                            size={20}
-                        />
+					    <GoogleLogin
+					        onSuccess={(credentialResponse) => {
 
-                        {" "}Continue with Google
+					            console.log(credentialResponse);
 
-                    </button>
+					            console.log(jwtDecode(credentialResponse.credential));
 
+					            handleGoogleSuccess(credentialResponse);
+
+					        }}
+					        onError={() => {
+
+					            alert("Google Login Failed");
+
+					        }}
+					    />
+
+					</div>
+             
                     <div className="bottom-text">
 
                         Don't have an account?
