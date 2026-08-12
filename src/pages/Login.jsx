@@ -6,8 +6,9 @@ import {useAuth} from "../context/AuthContext";
 
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import api from "../services/api";
 import { jwtDecode } from "jwt-decode";
-//import { useNavigate } from "react-router-dom";
+
 
 function Login() {
 
@@ -16,10 +17,10 @@ function Login() {
 	const auth=useAuth();
 	const navigate=useNavigate();
 
+
     const [form, setForm] = useState({
         email: "",
-        password: "",
-        rememberMe: false
+        password: ""
     });
 	
 
@@ -34,30 +35,42 @@ function Login() {
 
     };
 
-	const handleSubmit=async(e)=>{
+	const handleSubmit = async (e) => {
 
-		e.preventDefault();
+	    e.preventDefault();
 
+	    try {
 
-		try{
-			const response = await authService.login(form);
+	        const response = await api.post("/auth/login", {
+	            email: form.email,
+	            password: form.password
+	        });
 
-			      localStorage.setItem("token", response.data.token); // or response.data.jwt
+	        console.log("LOGIN RESPONSE:", response.data);
 
-			      localStorage.setItem(
-			          "user",
-			          JSON.stringify({
-			              name: response.data.username // or response.data.username
-			          })
-			      );
+	        const data = response.data;
 
-			      navigate("/");
+	        localStorage.setItem("token", data.token);
 
-			  } catch (error) {
-			      alert("Invalid Email or Password");
-			  }
+	        localStorage.setItem(
+	            "user",
+	            JSON.stringify({
+	                email: data.email
+	            })
+	        );
 
-		};
+	        navigate("/");
+
+	    } catch (error) {
+
+	        console.error("LOGIN ERROR:", error);
+
+	        alert(
+	            error.response?.data?.message ||
+	            "Invalid Email or Password"
+	        );
+	    }
+	};
 
 		
    
@@ -67,6 +80,10 @@ function Login() {
 
 	    try {
 
+			const googlepicture = jwtDecode(credentialResponse.credential);
+
+			const pictureurl= googlepicture.picture;
+			
 			const response = await axios.post(
 			    "http://localhost:8080/api/auth/google",
 			    {
@@ -74,13 +91,17 @@ function Login() {
 			    }
 			);
 
+			console.log(response.data.picture)
+			
 			localStorage.setItem("token", response.data.token); // or jwt
 
 			localStorage.setItem(
 			    "user",
 			    JSON.stringify({
-			        name: response.data.username // or username
+			        name: response.data.username, // or username
+					picture:pictureurl
 			    })
+		
 			);
 
 			navigate("/");
@@ -225,8 +246,7 @@ function Login() {
 					    <GoogleLogin
 					        onSuccess={(credentialResponse) => {
 
-					            console.log(credentialResponse);
-
+					            console.log(credentialResponse);								
 					            console.log(jwtDecode(credentialResponse.credential));
 
 					            handleGoogleSuccess(credentialResponse);
@@ -245,7 +265,7 @@ function Login() {
 
                         Don't have an account?
 
-                        <Link to="/register">
+                        <Link to="/registeremail">
                             {" "}Register
                         </Link>
 

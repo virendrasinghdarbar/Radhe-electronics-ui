@@ -22,7 +22,7 @@
   width: 45px;
   height: 60px;
   border: none;
-  background: rgba(0, 0, 0, 0.5);
+  background:none;
   color: white;
   font-size: 28px;
   cursor: pointer;

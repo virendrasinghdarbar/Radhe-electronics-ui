@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../components/ProductSlider.css";
+import "../styles/ProductSlider.css";
 
 import img1 from "../assets/banner1.jpg";
 import img2 from "../assets/banner2.jpg";
@@ -33,7 +33,7 @@ function ImageSlider() {
    
   return (
     <div className="slider">
-      <button className="left-btn" onClick={prevSlide}>
+      <button className="left-btn" onClick={prevSlide} >
         &#10094;
       </button>
 
@@ -43,7 +43,7 @@ function ImageSlider() {
         className="slider-image"
       />
 
-      <button className="right-btn" onClick={nextSlide}>
+      <button className="right-btn" onClick={nextSlide} >
         &#10095;
       </button>
     </div>

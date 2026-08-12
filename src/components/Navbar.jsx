@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import "../styles/RegisterEmail.css";
 function Navbar() {
 
     const navigate = useNavigate();
@@ -60,14 +61,12 @@ function Navbar() {
 
                             <div className="dropdown me-3">
                                 <button
-                                    className="btn btn-light dropdown-toggle"
+                                    className="profile-btn dropdown-toggle"
                                     data-bs-toggle="dropdown"
                                 >
                                     <img
-                                        src="/userlogin.png"
-                                        width="25"
-                                        height="25"
-                                        alt="User"
+                                        src={user?.picture || "/userLogin.png"}
+                                       className="profile-img"
                                     />
                                 </button>
 

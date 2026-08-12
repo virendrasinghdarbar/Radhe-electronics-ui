@@ -1,9 +1,11 @@
+import { MdRememberMe } from "react-icons/md";
 import api from "./api";
 
 const login = async (email, password) => {
     const response = await api.post("/auth/login", {
-        email,
-        password
+        email: email,
+        password: password,
+       
     });
 
     return response.data;

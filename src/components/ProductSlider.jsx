@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./components/ProductSlider.css";
+import "../styles/ProductSlider.css";
 
 import img1 from "../assets/banner1.jpg";
 import img2 from "../assets/banner2.jpg";

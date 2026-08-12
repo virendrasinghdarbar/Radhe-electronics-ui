@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { GoogleLogin } from "@react-oauth/google";
@@ -6,13 +6,15 @@ import axios from "axios";
 
 import api from "../services/api";
 
+
 function Register() {
 
     const navigate = useNavigate();
 	
+	const verifiedEmail = sessionStorage.getItem("verifiedEmail");
+		   
 	const [otp, setOtp] = useState("");
 	const [showOtpBox, setShowOtpBox] = useState(false);
-	const [otpVerified, setOtpVerified] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -49,6 +51,12 @@ function Register() {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
+		
+		if (!verifiedEmail) {
+		          alert("Please verify your email first");
+		          navigate("/RegisterEmail");
+		          return;
+		      }
 
         if(form.password !== form.confirmPassword){
 
@@ -66,7 +74,7 @@ function Register() {
 
                 lastName: form.lastName,
 
-                email: form.email,
+                email: verifiedEmail,
 
                 phone: form.phone,
 
@@ -74,10 +82,14 @@ function Register() {
 
             };
 
+			console.log(request);
+			
             await api.post("/auth/register", request);
 
             alert("Registration Successful");
 
+			sessionStorage.removeItem("verifiedEmail");
+			
             navigate("/login");
 
         }catch(error){
@@ -87,6 +99,20 @@ function Register() {
             alert("Registration Failed");
 
         }
+		
+		if (!verifiedEmail) {
+
+		        return (
+		            <div>
+		                <h2>Email verification required</h2>
+
+		                <button onClick={() => navigate("/register")}>
+		                    Go to Register
+		                </button>
+		            </div>
+		        );
+
+		    }
 
     };
 
@@ -121,54 +147,6 @@ function Register() {
 		    }
 
 		};
-		
-		
-		
-
-		const sendOtp = async () => {
-
-		    try{
-
-		        await axios.post(
-		            "http://localhost:8080/api/auth/send-otp",
-		            {
-		                email: from.email
-		            }
-		        );
-
-		        alert("OTP Sent Successfully");
-
-		        setShowOtpBox(true);
-
-		    }catch(error){
-
-		        alert("Unable to send OTP");
-		    }
-		};
-		
-		const verifyOtp = async()=>{
-
-		    try{
-
-		        const response = await axios.post(
-
-		        "http://localhost:8080/api/auth/verify-otp",
-
-		        {
-		            email:email,
-		            otp:otp
-		        });
-
-		        alert(response.data);
-
-		        setOtpVerified(true);
-
-		    }catch(error){
-
-		        alert("Invalid OTP");
-		    }
-
-		}
 
     return(
 
@@ -240,40 +218,19 @@ function Register() {
 
                         <div className="mb-3">
 
-                            <label>Email</label>
+						               <p>
+						                   Verified Email:
+						               </p>
 
-                            <input
-                                className="form-control"
-                                type="email"
-                                name="email"
-								placeholder="Enter Email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                            />
-							<button onClick={sendOtp}>
-							   Send OTP
-							</button>
-							{
-							showOtpBox &&
-
-							<div>
-
-							<input
-							type="text"
-							placeholder="Enter OTP"
-							value={otp}
-							onChange={(e)=>setOtp(e.target.value)}
-							/>
-
-							<button onClick={verifyOtp}>
-							Verify OTP
-							</button>
-
-							</div>
-
-							}
-                        </div>
+						               <input
+						                   type="email"
+						                   value={verifiedEmail}
+						                   disabled
+						               />
+									   
+                            
+							
+					   </div>
 
                         <div className="mb-3">
 
@@ -362,10 +319,8 @@ function Register() {
                         <button
                             className="btn-login"
                             type="submit"
-							disabled={!otpVerified}
-							//onClick={register}
+							onClick={handleSubmit}
                         >
-
                             Register
 
                         </button>
@@ -375,14 +330,18 @@ function Register() {
                     <hr/>
 
 					<div className="d-flex justify-content-center mt-3">
-					 <GoogleLogin onSuccess={(credentialResponse) => 
-						{ 
-							console.log(credentialResponse); 
-							console.log(jwtDecode(credentialResponse.credential));
-							 handleGoogleSuccess(credentialResponse); }} 
-							 onError={() => { 
-								alert("Google Login Failed"); 
-							}} /> </div>
+										 <GoogleLogin onSuccess={(credentialResponse) => 
+											{ 
+												console.log(credentialResponse); 
+												console.log(jwtDecode(credentialResponse.credential));
+												 handleGoogleSuccess(credentialResponse); }} 
+												 onError={() => { 
+													alert("Google Login Failed"); 
+												}} 
+												
+												/> 
+												
+												</div>
 					             
                   
 
