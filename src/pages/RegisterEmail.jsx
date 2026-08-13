@@ -24,8 +24,7 @@ function RegisterEmail() {
 
             setLoading(true);
 
-            const response = await axios.post(
-                "http://localhost:8080/api/auth/send-otp",
+            const response = await axios.post("/auth/send-otp",
                 {
                     email: email
                 }
@@ -61,8 +60,7 @@ function RegisterEmail() {
 
             setLoading(true);
 
-            const response = await axios.post(
-                "http://localhost:8080/api/auth/verify-otp",
+            const response = await axios.post("/auth/verify-otp",
                 {
                     email: email,
                     otp: otp

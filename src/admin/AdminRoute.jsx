@@ -12,7 +12,7 @@ function AdminRoute({ children }) {
 
     if (!token || !userString) {
         console.log("❌ Token or user missing");
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/login" replace />;
     }
 
     try {
@@ -20,9 +20,9 @@ function AdminRoute({ children }) {
         const user = JSON.parse(userString);
 
         console.log("USER OBJECT:", user);
-        console.log("USER ROLE:", user.role);
+        console.log("USER ROLE:", user.role.roleName);
 
-        if (user.role !== "ADMIN") {
+        if (user.role.roleName !== "ADMIN") {
             console.log("❌ User is not ADMIN");
             return <Navigate to="/" replace />;
         }
@@ -39,7 +39,7 @@ function AdminRoute({ children }) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/login" replace />;
     }
 }
 

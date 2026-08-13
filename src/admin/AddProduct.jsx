@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../services/api";
+
 
 function AddProduct() {
 
@@ -32,17 +34,11 @@ function AddProduct() {
         const formData = new FormData();
 
         formData.append("name", product.name);
-        formData.append(
-            "description",
-            product.description
-        );
+        formData.append("description",product.description);
         formData.append("price", product.price);
         formData.append("stock", product.stock);
         formData.append("brand", product.brand);
-        formData.append(
-            "category",
-            product.category
-        );
+        formData.append("category",product.category);
 
         if (image) {
             formData.append("image", image);
@@ -50,8 +46,8 @@ function AddProduct() {
 
         try {
 
-            await axios.post(
-                "http://localhost:8080/api/admin/products",
+            await api.post(
+                "/admin/products",
                 formData,
                 {
                     headers: {
@@ -72,7 +68,7 @@ function AddProduct() {
                 category: ""
             });
 
-            setImage(null);
+            setImage({image:""});
 
         } catch (error) {
 
@@ -139,14 +135,14 @@ function AddProduct() {
                     onChange={handleChange}
                 />
 
-                <input
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    onChange={(e) =>
-                        setImage(e.target.files[0])
-                    }
-                    required
-                />
+				<input
+				    type="file"
+				    accept="image/*"
+				    multiple
+				    onChange={(e) =>
+				        setImages(Array.from(e.target.files))
+				    }
+				/>
 
                 <button type="submit">
                     Add Product

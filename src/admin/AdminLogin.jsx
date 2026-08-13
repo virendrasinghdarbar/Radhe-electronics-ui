@@ -19,7 +19,7 @@ function AdminLogin() {
         try {
 
             const response = await axios.post(
-                "http://localhost:8080/api/admin/login",
+                "/admin/login",
                 {
                     email: email,
                     password: password,

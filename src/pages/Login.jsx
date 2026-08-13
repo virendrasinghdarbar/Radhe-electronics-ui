@@ -3,9 +3,8 @@ import { Link, useNavigate} from "react-router-dom";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import authService from "../services/authService";
 import {useAuth} from "../context/AuthContext";
-
-import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { GoogleLogin } from "@react-oauth/google";
 import api from "../services/api";
 import { jwtDecode } from "jwt-decode";
 
@@ -40,26 +39,43 @@ function Login() {
 	    e.preventDefault();
 
 	    try {
+			// Remove old token before login
+		   localStorage.removeItem("token");
 
 	        const response = await api.post("/auth/login", {
 	            email: form.email,
 	            password: form.password
 	        });
 
-	        console.log("LOGIN RESPONSE:", response.data);
+	        console.log("LOGIN RESPONSE:", response.data.data.token);
 
-	        const data = response.data;
+	        const data = response.data.data;
+			if (!data.token) {
+			           throw new Error("Token not received from backend");
+			  }
+			if (data.role?.roleName === "ADMIN") {
+						
+						localStorage.setItem("token",data.token);
+						
+						localStorage.setItem("user", JSON.stringify({
+							email: data.email,
+							role: data.role
+						}))
+								   
+			               navigate("/admin/dashboard");
+		    }
+			else{
+				
+	                    localStorage.setItem("token", data.token);
 
-	        localStorage.setItem("token", data.token);
+            	        localStorage.setItem(
+	                              "user",
+	                              JSON.stringify({
+	                              email: data.email ,
+							  role: data.role  }));
 
-	        localStorage.setItem(
-	            "user",
-	            JSON.stringify({
-	                email: data.email
-	            })
-	        );
-
-	        navigate("/");
+	       				 navigate("/");
+			}
 
 	    } catch (error) {
 
@@ -79,22 +95,26 @@ function Login() {
 	const handleGoogleSuccess = async (credentialResponse) => {
 
 	    try {
+			// Remove old token before login
+		   localStorage.removeItem("token");
 
 			const googlepicture = jwtDecode(credentialResponse.credential);
 
 			const pictureurl= googlepicture.picture;
 			
-			const response = await axios.post(
-			    "http://localhost:8080/api/auth/google",
-			    {
+			const response = await api.post("/auth/google",{
+			//    
+		
 			        token: credentialResponse.credential
 			    }
 			);
 
 			console.log(response.data.picture)
-			
+			console.log("LOGIN RESPONSE:", response.data.username);
+							console.log("LOGIN RESPONSE:", response.data.pictureurl);
 			localStorage.setItem("token", response.data.token); // or jwt
 
+			console.log("LOGIN RESPONSE:", response.data.token);
 			localStorage.setItem(
 			    "user",
 			    JSON.stringify({
@@ -102,8 +122,10 @@ function Login() {
 					picture:pictureurl
 			    })
 		
+				
 			);
 
+			
 			navigate("/");
 
 	    } catch (error) {
@@ -248,7 +270,6 @@ function Login() {
 
 					            console.log(credentialResponse);								
 					            console.log(jwtDecode(credentialResponse.credential));
-
 					            handleGoogleSuccess(credentialResponse);
 
 					        }}

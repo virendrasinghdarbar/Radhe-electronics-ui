@@ -4,6 +4,7 @@ import CategorySection from "../components/CategorySection";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import Banner from "../components/Banner";
+import ProductsHome from "../components/ProductsFeed";
 
 
 function Home(){
@@ -19,8 +20,10 @@ function Home(){
 	
             <CategorySection/>
 
+			
+			
             <ProductCard/>
-
+		
             <Footer/>
 
         </>

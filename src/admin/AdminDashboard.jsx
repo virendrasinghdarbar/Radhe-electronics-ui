@@ -9,7 +9,7 @@ function AdminDashboard() {
     const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        navigate("/admin/login");
+        navigate("/login");
     };
 
     return (

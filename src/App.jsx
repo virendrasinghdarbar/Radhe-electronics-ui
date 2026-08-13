@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import AdminRoute from "./Admin/AdminRoute";
+import AdminRoute from "./admin/AdminRoute";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -56,15 +56,15 @@ function App() {
 
 
             {/* Admin Dashboard - Protected */}
-            <Route
-                path="/admin/dashboard"
-                element={
-                    <AdminRoute>
-                        <AdminDashboard />
-                    </AdminRoute>
-                }
-            />
-
+			<Route
+			               path="/admin/dashboard"
+			               element={
+			                   <AdminRoute>
+			                       <AdminDashboard />
+			                   </AdminRoute>
+			               }
+			           />
+			
 
             {/* Manage Products - Protected */}
             <Route
