@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
 import api from "../services/api";
-
+import "../styles/AddProduct.css";
 
 function AddProduct() {
 
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	
     const [product, setProduct] = useState({
         name: "",
         description: "",
@@ -14,34 +15,37 @@ function AddProduct() {
         category: ""
     });
 
-    const [image, setImage] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
 
     const handleChange = (e) => {
-
         setProduct({
             ...product,
             [e.target.name]: e.target.value
         });
     };
-
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
-        const token =
-            localStorage.getItem("token");
+		// Prevent multiple clicks
+		   if (isSubmitting) {
+		       return;
+		   }
+
+		   setIsSubmitting(true);
+		   
+        const token = localStorage.getItem("token");
 
         const formData = new FormData();
 
         formData.append("name", product.name);
-        formData.append("description",product.description);
+        formData.append("description", product.description);
         formData.append("price", product.price);
         formData.append("stock", product.stock);
         formData.append("brand", product.brand);
-        formData.append("category",product.category);
+        formData.append("category", product.category);
 
-        if (image) {
-            formData.append("image", image);
+        if (imageFile) {
+            formData.append("image", imageFile);
         }
 
         try {
@@ -51,8 +55,7 @@ function AddProduct() {
                 formData,
                 {
                     headers: {
-                        Authorization:
-                            `Bearer ${token}`
+                        Authorization: `Bearer ${token}`
                     }
                 }
             );
@@ -68,7 +71,7 @@ function AddProduct() {
                 category: ""
             });
 
-            setImage({image:""});
+            setImageFile(null);
 
         } catch (error) {
 
@@ -79,76 +82,142 @@ function AddProduct() {
                 "Failed to add product"
             );
         }
+		finally {
+		        // Enable button again after request completes
+		        setIsSubmitting(false);
+		    }
     };
 
     return (
-        <div className="add-product">
+        <div className="add-product-page">
 
-            <h2>Add Product</h2>
+            <div className="add-product-card">
 
-            <form onSubmit={handleSubmit}>
+                <div className="product-header">
+                    <h2>Add New Product</h2>
+                    <p>Enter product details and upload product image</p>
+                </div>
 
-                <input
-                    name="name"
-                    placeholder="Product Name"
-                    value={product.name}
-                    onChange={handleChange}
-                    required
-                />
+                <form onSubmit={handleSubmit}>
 
-                <textarea
-                    name="description"
-                    placeholder="Description"
-                    value={product.description}
-                    onChange={handleChange}
-                />
+                    <div className="form-grid">
 
-                <input
-                    type="number"
-                    name="price"
-                    placeholder="Price"
-                    value={product.price}
-                    onChange={handleChange}
-                    required
-                />
+                        <div className="form-group">
+                            <label>Product Name</label>
 
-                <input
-                    type="number"
-                    name="stock"
-                    placeholder="Stock"
-                    value={product.stock}
-                    onChange={handleChange}
-                    required
-                />
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Enter product name"
+                                value={product.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
 
-                <input
-                    name="brand"
-                    placeholder="Brand"
-                    value={product.brand}
-                    onChange={handleChange}
-                />
 
-                <input
-                    name="category"
-                    placeholder="Category"
-                    value={product.category}
-                    onChange={handleChange}
-                />
+                        <div className="form-group">
+                            <label>Brand</label>
 
-				<input
-				    type="file"
-				    accept="image/*"
-				    multiple
-				    onChange={(e) =>
-				        setImages(Array.from(e.target.files))
-				    }
-				/>
+                            <input
+                                type="text"
+                                name="brand"
+                                placeholder="Enter brand"
+                                value={product.brand}
+                                onChange={handleChange}
+                            />
+                        </div>
 
-                <button type="submit">
-                    Add Product
-                </button>
 
-            </form>
+                        <div className="form-group">
+                            <label>Price</label>
+
+                            <input
+                                type="number"
+                                name="price"
+                                placeholder="Enter price"
+                                value={product.price}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+
+                        <div className="form-group">
+                            <label>Stock</label>
+
+                            <input
+                                type="number"
+                                name="stock"
+                                placeholder="Enter stock quantity"
+                                value={product.stock}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+
+                        <div className="form-group">
+                            <label>Category</label>
+
+                            <input
+                                type="text"
+                                name="category"
+                                placeholder="Enter category"
+                                value={product.category}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+
+                        <div className="form-group image-group">
+                            <label>Product Image</label>
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                    setImageFile(e.target.files[0])
+                                }
+                            />
+
+                            {imageFile && (
+                                <span className="file-name">
+                                    {imageFile.name}
+                                </span>
+                            )}
+                        </div>
+
+                    </div>
+
+
+                    <div className="form-group description-group">
+                        <label>Description</label>
+
+                        <textarea
+                            name="description"
+                            placeholder="Enter product description"
+                            value={product.description}
+                            onChange={handleChange}
+                            rows="5"
+                        />
+                    </div>
+
+
+                    <div className="button-container">
+						<button
+						    type="submit"
+						    className="add-product-btn"
+						    disabled={isSubmitting}
+						>
+						    {isSubmitting ? "Saving Product..." : "Add Product"}
+						</button>
+
+                    </div>
+
+                </form>
+
+            </div>
 
         </div>
     );

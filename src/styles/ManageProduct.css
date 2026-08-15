@@ -1,0 +1,433 @@
+.manage-products-page {
+    min-height: calc(100vh - 70px);
+    background: #f5f6f8;
+    padding: 35px 25px;
+}
+
+
+/* Main Card */
+
+.products-card {
+    max-width: 1250px;
+    margin: auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+
+/* Header */
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 30px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.products-header h2 {
+    margin: 0;
+    color: #222;
+    font-size: 26px;
+}
+
+.products-header p {
+    margin: 7px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.product-count {
+    background: #2874f0;
+    color: white;
+    padding: 9px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* Table */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.products-table th {
+    background: #fafafa;
+    color: #555;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 15px 18px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.products-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 14px;
+    color: #444;
+    vertical-align: middle;
+}
+
+.products-table tbody tr:hover {
+    background: #fafcff;
+}
+
+
+/* Product Image */
+
+.product-image {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+    padding: 5px;
+    background: white;
+}
+
+
+/* Product Name */
+
+.product-name {
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 5px;
+}
+
+.product-description {
+    max-width: 220px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #888;
+    font-size: 12px;
+}
+
+
+/* Category */
+
+.category-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: #eef4ff;
+    color: #2874f0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
+/* Price */
+
+.price {
+    font-weight: 600;
+    color: #222 !important;
+}
+
+
+/* Stock */
+
+.stock {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.stock.available {
+    background: #e9f8ef;
+    color: #1c8c4c;
+}
+
+.stock.out {
+    background: #ffebeb;
+    color: #d93025;
+}
+
+
+/* Action Buttons */
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-btn,
+.delete-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 13px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.edit-btn {
+    background: #eaf2ff;
+    color: #2874f0;
+}
+
+.edit-btn:hover {
+    background: #2874f0;
+    color: white;
+}
+
+.delete-btn {
+    background: #ffeded;
+    color: #d93025;
+}
+
+.delete-btn:hover {
+    background: #d93025;
+    color: white;
+}
+
+.edit-btn:disabled,
+.delete-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* No Products */
+
+.no-products {
+    text-align: center !important;
+    padding: 50px !important;
+    color: #888 !important;
+}
+
+
+/* Loading */
+
+.products-loading {
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555;
+    font-size: 16px;
+}
+
+
+/* =========================
+   Modal
+========================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.edit-modal {
+    width: 100%;
+    max-width: 750px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+
+/* Modal Header */
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #222;
+    font-size: 22px;
+}
+
+.modal-header p {
+    margin: 5px 0 0;
+    color: #888;
+    font-size: 13px;
+}
+
+.close-btn {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    background: #f3f3f3;
+    font-size: 25px;
+    color: #555;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    background: #eeeeee;
+}
+
+
+/* Edit Form */
+
+.edit-form {
+    padding: 30px;
+}
+
+.edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 7px;
+    color: #333;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d8d8d8;
+    border-radius: 7px;
+    padding: 11px 13px;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.form-group input {
+    height: 44px;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2874f0;
+    box-shadow: 0 0 0 3px rgba(40, 116, 240, 0.1);
+}
+
+.description-field {
+    margin-top: 20px;
+}
+
+
+/* Modal Actions */
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.cancel-btn,
+.save-btn {
+    min-width: 130px;
+    height: 43px;
+    border: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background: #eeeeee;
+    color: #555;
+}
+
+.cancel-btn:hover {
+    background: #dddddd;
+}
+
+.save-btn {
+    background: #2874f0;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #1558c0;
+}
+
+.save-btn:disabled,
+.cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .manage-products-page {
+        padding: 20px 10px;
+    }
+
+    .products-header {
+        padding: 20px;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .products-header h2 {
+        font-size: 21px;
+    }
+
+    .product-count {
+        font-size: 11px;
+        padding: 7px 10px;
+    }
+
+    .edit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-form {
+        padding: 20px;
+    }
+
+    .modal-header {
+        padding: 20px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .cancel-btn,
+    .save-btn {
+        width: 100%;
+    }
+}

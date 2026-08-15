@@ -1,26 +1,35 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+import "../styles/ManageProduct.css";
 
 function ManageProducts() {
 
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const navigate = useNavigate();
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [editImage, setEditImage] = useState(null);
 
-    const token =
-        localStorage.getItem("token");
+    const [saving, setSaving] = useState(false);
+    const [deletingId, setDeletingId] = useState(null);
 
-    const loadProducts = async () => {
+    const token = localStorage.getItem("token");
+
+    // =========================
+    // Fetch Products
+    // =========================
+
+    const fetchProducts = async () => {
 
         try {
 
-            const response = await axios.get(
-                "http://localhost:8080/api/admin/products",
+            setLoading(true);
+
+            const response = await api.get(
+                "/products",
                 {
                     headers: {
-                        Authorization:
-                            `Bearer ${token}`
+                        Authorization: `Bearer ${token}`
                     }
                 }
             );
@@ -29,32 +38,108 @@ function ManageProducts() {
 
         } catch (error) {
 
-            console.error(error);
+            console.error("Error fetching products:", error);
 
-            if (error.response?.status === 403) {
-                alert("Access denied");
-            }
+            alert("Failed to load products");
+
+        } finally {
+
+            setLoading(false);
         }
     };
 
+
     useEffect(() => {
-
-        loadProducts();
-
+        fetchProducts();
     }, []);
 
-    const deleteProduct = async (id) => {
 
-        if (!window.confirm(
-            "Are you sure you want to delete this product?"
-        )) {
+    // =========================
+    // Open Edit
+    // =========================
+
+    const handleEdit = (product) => {
+
+        setEditingProduct({
+            ...product
+        });
+
+        setEditImage(null);
+    };
+
+
+    // =========================
+    // Edit Input Change
+    // =========================
+
+    const handleEditChange = (e) => {
+
+        setEditingProduct({
+            ...editingProduct,
+            [e.target.name]: e.target.value
+        });
+    };
+
+
+    // =========================
+    // Update Product
+    // =========================
+
+    const handleUpdate = async (e) => {
+
+        e.preventDefault();
+
+        if (saving) {
             return;
         }
 
+        setSaving(true);
+
         try {
 
-            await axios.delete(
-                `http://localhost:8080/api/admin/products/${id}`,
+            const formData = new FormData();
+
+            formData.append(
+                "name",
+                editingProduct.name
+            );
+
+            formData.append(
+                "description",
+                editingProduct.description
+            );
+
+            formData.append(
+                "price",
+                editingProduct.price
+            );
+
+            formData.append(
+                "stock",
+                editingProduct.stock
+            );
+
+            formData.append(
+                "brand",
+                editingProduct.brand
+            );
+
+            formData.append(
+                "category",
+                editingProduct.category
+            );
+
+            if (editImage) {
+                formData.append(
+                    "image",
+                    editImage
+                );
+            }
+
+
+            await api.put(
+                `/admin/products/${editingProduct.id}`,
+                formData,
                 {
                     headers: {
                         Authorization:
@@ -63,118 +148,524 @@ function ManageProducts() {
                 }
             );
 
-            alert("Product deleted");
 
-            loadProducts();
+            alert("Product updated successfully!");
+
+            setEditingProduct(null);
+
+            setEditImage(null);
+
+            fetchProducts();
 
         } catch (error) {
 
             console.error(error);
 
-            alert("Delete failed");
+            alert(
+                error.response?.data ||
+                "Failed to update product"
+            );
+
+        } finally {
+
+            setSaving(false);
         }
     };
 
-    return (
-        <div className="manage-products">
 
-            <h2>Manage Products</h2>
+    // =========================
+    // Delete Product
+    // =========================
 
-            <button
-                onClick={() =>
-                    navigate("/admin/add-product")
+    const handleDelete = async (id) => {
+
+        const confirmDelete =
+            window.confirm(
+                "Are you sure you want to delete this product?"
+            );
+
+        if (!confirmDelete) {
+            return;
+        }
+
+        if (deletingId) {
+            return;
+        }
+
+        setDeletingId(id);
+
+        try {
+
+            await api.delete(
+                `/admin/products/${id}`,
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
                 }
-            >
-                + Add Product
-            </button>
+            );
 
-            <table>
+            alert("Product deleted successfully!");
 
-                <thead>
+            setProducts(
+                products.filter(
+                    product => product.id !== id
+                )
+            );
 
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Brand</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Action</th>
-                    </tr>
+        } catch (error) {
 
-                </thead>
+            console.error(error);
 
-                <tbody>
+            alert(
+                error.response?.data ||
+                "Failed to delete product"
+            );
 
-                    {products.map(product => (
+        } finally {
 
-                        <tr key={product.id}>
+            setDeletingId(null);
+        }
+    };
 
-                            <td>
 
-                                <img
-                                    src={
-                                        "http://localhost:8080"
-                                        + product.imageUrl
+    // =========================
+    // Loading
+    // =========================
+
+    if (loading) {
+
+        return (
+            <div className="products-loading">
+                Loading products...
+            </div>
+        );
+    }
+
+
+    return (
+
+        <div className="manage-products-page">
+
+            <div className="products-card">
+
+                <div className="products-header">
+
+                    <div>
+                        <h2>Manage Products</h2>
+
+                        <p>
+                            View, edit and delete your products
+                        </p>
+                    </div>
+
+                    <div className="product-count">
+                        {products.length} Products
+                    </div>
+
+                </div>
+
+
+                {/* =========================
+                    Product Table
+                ========================= */}
+
+                <div className="table-container">
+
+                    <table className="products-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Image</th>
+
+                                <th>Product</th>
+
+                                <th>Brand</th>
+
+                                <th>Category</th>
+
+                                <th>Price</th>
+
+                                <th>Stock</th>
+
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {products.length === 0 ? (
+
+                                <tr>
+
+                                    <td
+                                        colSpan="7"
+                                        className="no-products"
+                                    >
+                                        No products found
+                                    </td>
+
+                                </tr>
+
+                            ) : (
+
+                                products.map((product) => (
+
+                                    <tr key={product.id}>
+
+                                        <td>
+
+                                            <img
+                                                src={`http://localhost:8080${product.imageUrl}`}
+                                                alt={product.name}
+                                                className="product-image"
+                                            />
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div className="product-name">
+
+                                                {product.name}
+
+                                            </div>
+
+                                            <div className="product-description">
+
+                                                {product.description}
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+                                            {product.brand}
+                                        </td>
+
+
+                                        <td>
+
+                                            <span className="category-badge">
+
+                                                {product.category}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td className="price">
+
+                                            ₹{product.price}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span
+                                                className={
+                                                    product.stock > 0
+                                                        ? "stock available"
+                                                        : "stock out"
+                                                }
+                                            >
+
+                                                {product.stock}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div className="action-buttons">
+
+                                                <button
+                                                    className="edit-btn"
+                                                    onClick={() =>
+                                                        handleEdit(product)
+                                                    }
+                                                    disabled={
+                                                        deletingId !== null ||
+                                                        saving
+                                                    }
+                                                >
+                                                    Edit
+                                                </button>
+
+
+                                                <button
+                                                    className="delete-btn"
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            product.id
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        deletingId !== null ||
+                                                        saving
+                                                    }
+                                                >
+
+                                                    {deletingId === product.id
+                                                        ? "Deleting..."
+                                                        : "Delete"}
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            )}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            {/* =========================
+                Edit Modal
+            ========================= */}
+
+            {editingProduct && (
+
+                <div className="modal-overlay">
+
+                    <div className="edit-modal">
+
+                        <div className="modal-header">
+
+                            <div>
+
+                                <h2>Edit Product</h2>
+
+                                <p>
+                                    Update product information
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                className="close-btn"
+                                onClick={() =>
+                                    !saving &&
+                                    setEditingProduct(null)
+                                }
+                                disabled={saving}
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+
+                        <form
+                            onSubmit={handleUpdate}
+                            className="edit-form"
+                        >
+
+                            <div className="edit-grid">
+
+                                <div className="form-group">
+
+                                    <label>
+                                        Product Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={
+                                            editingProduct.name || ""
+                                        }
+                                        onChange={
+                                            handleEditChange
+                                        }
+                                        required
+                                    />
+
+                                </div>
+
+
+                                <div className="form-group">
+
+                                    <label>
+                                        Brand
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="brand"
+                                        value={
+                                            editingProduct.brand || ""
+                                        }
+                                        onChange={
+                                            handleEditChange
+                                        }
+                                    />
+
+                                </div>
+
+
+                                <div className="form-group">
+
+                                    <label>
+                                        Price
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        value={
+                                            editingProduct.price || ""
+                                        }
+                                        onChange={
+                                            handleEditChange
+                                        }
+                                        required
+                                    />
+
+                                </div>
+
+
+                                <div className="form-group">
+
+                                    <label>
+                                        Stock
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        name="stock"
+                                        value={
+                                            editingProduct.stock || ""
+                                        }
+                                        onChange={
+                                            handleEditChange
+                                        }
+                                        required
+                                    />
+
+                                </div>
+
+
+                                <div className="form-group">
+
+                                    <label>
+                                        Category
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="category"
+                                        value={
+                                            editingProduct.category || ""
+                                        }
+                                        onChange={
+                                            handleEditChange
+                                        }
+                                    />
+
+                                </div>
+
+
+                                <div className="form-group">
+
+                                    <label>
+                                        Product Image
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) =>
+                                            setEditImage(
+                                                e.target.files[0]
+                                            )
+                                        }
+                                    />
+
+                                </div>
+
+                            </div>
+
+
+                            <div className="form-group description-field">
+
+                                <label>
+                                    Description
+                                </label>
+
+                                <textarea
+                                    name="description"
+                                    rows="4"
+                                    value={
+                                        editingProduct.description || ""
                                     }
-                                    alt={product.name}
-                                    width="70"
-                                    height="70"
+                                    onChange={
+                                        handleEditChange
+                                    }
                                 />
 
-                            </td>
+                            </div>
 
-                            <td>
-                                {product.name}
-                            </td>
 
-                            <td>
-                                {product.brand}
-                            </td>
-
-                            <td>
-                                {product.category}
-                            </td>
-
-                            <td>
-                                ₹{product.price}
-                            </td>
-
-                            <td>
-                                {product.stock}
-                            </td>
-
-                            <td>
+                            <div className="modal-actions">
 
                                 <button
+                                    type="button"
+                                    className="cancel-btn"
                                     onClick={() =>
-                                        navigate(
-                                            `/admin/edit-product/${product.id}`
-                                        )
+                                        setEditingProduct(null)
                                     }
+                                    disabled={saving}
                                 >
-                                    Edit
+                                    Cancel
                                 </button>
+
 
                                 <button
-                                    onClick={() =>
-                                        deleteProduct(
-                                            product.id
-                                        )
-                                    }
+                                    type="submit"
+                                    className="save-btn"
+                                    disabled={saving}
                                 >
-                                    Delete
+
+                                    {saving
+                                        ? "Saving..."
+                                        : "Save Changes"}
+
                                 </button>
 
-                            </td>
+                            </div>
 
-                        </tr>
+                        </form>
 
-                    ))}
+                    </div>
 
-                </tbody>
+                </div>
 
-            </table>
+            )}
 
         </div>
     );

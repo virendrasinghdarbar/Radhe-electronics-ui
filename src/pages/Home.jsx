@@ -20,7 +20,7 @@ function Home(){
 	
             <CategorySection/>
 
-			
+			<ProductsHome />
 			
             <ProductCard/>
 		
