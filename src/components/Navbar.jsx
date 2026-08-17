@@ -45,7 +45,7 @@ function Navbar() {
                                 to="/orders"
                                 className="nav-link text-white me-3"
                             >
-                                Orders
+                               My Orders
                             </Link>
 
                             <Link
@@ -105,9 +105,12 @@ function Navbar() {
                         </Link>
                     )}
 
-                    <button className="btn btn-warning">
-                        🛒 Cart
-                    </button>
+					<button
+					    className="btn btn-warning"
+					    onClick={() => navigate("/cart")}
+					>
+					    🛒 Cart
+					</button>
 
                 </div>
 

@@ -322,7 +322,8 @@ function ManageProducts() {
                                         <td>
 
                                             <img
-                                                src={`http://localhost:8080${product.imageUrl}`}
+                                              //  src={`http://localhost:8080${product.imageUrl}`}
+												src={`${import.meta.env.VITE_API_URL}${product.imageUrl}`}
                                                 alt={product.name}
                                                 className="product-image"
                                             />

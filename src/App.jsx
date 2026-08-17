@@ -13,6 +13,8 @@ import AddProduct from "./admin/AddProduct";
 import ManageProducts from "./admin/ManageProducts";
 import EditProduct from "./admin/EditProduct";
 import AdminDashboard from "./admin/AdminDashboard";
+import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
 
 function App() {
 
@@ -45,7 +47,16 @@ function App() {
                 element={<Dashboard />}
             />
 
+			<Route
+			    path="/products/:id"
+			    element={<ProductDetails />}
+			/>
+			
 
+			<Route
+			    path="/cart"
+			    element={<Cart />}
+			/>
             {/* ================= ADMIN ================= */}
 
             {/* Admin Login - Public */}

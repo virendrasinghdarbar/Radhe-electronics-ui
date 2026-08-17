@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/RegisterEmail.css";
 import axios from "axios";
+import api  from "../services/api";
 
 function RegisterEmail() {
 
@@ -24,7 +25,7 @@ function RegisterEmail() {
 
             setLoading(true);
 
-            const response = await axios.post("/auth/send-otp",
+            const response = await api.post("/auth/send-otp",
                 {
                     email: email
                 }

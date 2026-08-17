@@ -7,10 +7,11 @@ function AddProduct() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	
     const [product, setProduct] = useState({
-        name: "",
+        productName: "",
         description: "",
         price: "",
-        stock: "",
+		discount: "",
+        quantity: "",
         brand: "",
         category: ""
     });
@@ -37,12 +38,14 @@ function AddProduct() {
 
         const formData = new FormData();
 
-        formData.append("name", product.name);
+        formData.append("productName", product.productName);
         formData.append("description", product.description);
         formData.append("price", product.price);
-        formData.append("stock", product.stock);
+		formData.append("discount", product.discount);
+        formData.append("quantity", product.quantity);
         formData.append("brand", product.brand);
         formData.append("category", product.category);
+		
 
         if (imageFile) {
             formData.append("image", imageFile);
@@ -63,10 +66,11 @@ function AddProduct() {
             alert("Product added successfully!");
 
             setProduct({
-                name: "",
+                productName: "",
                 description: "",
                 price: "",
-                stock: "",
+				discount: "",
+                quantity: "",
                 brand: "",
                 category: ""
             });
@@ -107,7 +111,7 @@ function AddProduct() {
 
                             <input
                                 type="text"
-                                name="name"
+                                name="productName"
                                 placeholder="Enter product name"
                                 value={product.name}
                                 onChange={handleChange}
@@ -142,15 +146,27 @@ function AddProduct() {
                             />
                         </div>
 
+						<div className="form-group">
+						     <label>Old Price</label>
+
+						     <input
+						         type="number"
+						         name="discount"
+						         placeholder="Enter old price"
+						         value={product.discount}
+						         onChange={handleChange}
+						         required
+						       />
+						      </div>
 
                         <div className="form-group">
                             <label>Stock</label>
 
                             <input
                                 type="number"
-                                name="stock"
+                                name="quantity"
                                 placeholder="Enter stock quantity"
-                                value={product.stock}
+                                value={product.quantity}
                                 onChange={handleChange}
                                 required
                             />

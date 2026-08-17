@@ -23,11 +23,13 @@ function AdminDashboard() {
                 </h2>
 
                 <nav className="admin-menu">
-
+					<Link to="/" className="menu-item">
+						   🏠 Home
+					</Link>
                     <Link to="/admin/dashboard" className="menu-item active">
                         🏠 Dashboard
                     </Link>
-
+			
                     <Link to="/admin/products" className="menu-item">
                         📦 Manage Products
                     </Link>
