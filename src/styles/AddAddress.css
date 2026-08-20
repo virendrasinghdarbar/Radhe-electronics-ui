@@ -1,0 +1,204 @@
+.address-page {
+    min-height: 100vh;
+
+    background: #f5f5f5;
+
+    padding: 40px 20px;
+}
+
+
+.address-container {
+    max-width: 700px;
+
+    margin: auto;
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+.address-container h1 {
+    margin: 0;
+
+    font-size: 28px;
+
+    color: #222;
+}
+
+
+.address-subtitle {
+    color: #777;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-group {
+    margin-bottom: 20px;
+
+    flex: 1;
+}
+
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-weight: 600;
+
+    color: #333;
+}
+
+
+.form-group input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    height: 45px;
+
+    padding: 0 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+
+.form-group input:focus {
+    border-color: #2874f0;
+}
+
+
+.form-row {
+    display: flex;
+
+    gap: 20px;
+}
+
+
+/* =========================
+   PINCODE
+========================= */
+
+.pincode-wrapper {
+    position: relative;
+}
+
+
+.pincode-wrapper span {
+    position: absolute;
+
+    right: 12px;
+
+    top: 13px;
+
+    font-size: 13px;
+
+    color: #2874f0;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.address-buttons {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 15px;
+
+    margin-top: 30px;
+}
+
+
+.cancel-btn {
+    padding: 12px 25px;
+
+    border: 1px solid #ccc;
+
+    background: white;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+
+.save-address-btn {
+    padding: 12px 30px;
+
+    border: none;
+
+    background: #2874f0;
+
+    color: white;
+
+    border-radius: 5px;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.save-address-btn:disabled {
+    background: #999;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .address-page {
+        padding: 20px 10px;
+    }
+
+
+    .address-container {
+        padding: 20px;
+    }
+
+
+    .form-row {
+        flex-direction: column;
+
+        gap: 0;
+    }
+
+
+    .address-buttons {
+        flex-direction: column;
+    }
+
+
+    .cancel-btn,
+    .save-address-btn {
+        width: 100%;
+    }
+
+}

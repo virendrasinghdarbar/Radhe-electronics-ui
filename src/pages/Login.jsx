@@ -71,8 +71,9 @@ function Login() {
             	        localStorage.setItem(
 	                              "user",
 	                              JSON.stringify({
-	                              email: data.email ,
-							  role: data.role  }));
+									id: data.id,
+	                                email: data.email ,
+							        role: data.role  }));
 
 	       				 navigate("/");
 			}

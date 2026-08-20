@@ -49,8 +49,25 @@ function ProductDetails() {
 
     const addProductToCart = () => {
 
-        let cart =
-            JSON.parse(localStorage.getItem("cart")) || [];
+		
+		const user = JSON.parse(
+		        localStorage.getItem("user")
+		    );
+
+		    if (!user) {
+		        alert("Please login first");
+		        return;
+		    }
+
+		    const cartKey = `cart_${user.id}`;
+
+		    let cart =
+		        JSON.parse(
+		            localStorage.getItem(cartKey)
+		        ) || [];
+				
+       /* let cart =
+            JSON.parse(localStorage.getItem("cart")) || [];*/
 
 
         const existingProduct = cart.find(
@@ -88,7 +105,7 @@ function ProductDetails() {
 
 
         localStorage.setItem(
-            "cart",
+            cartKey,
             JSON.stringify(cart)
         );
 

@@ -14,6 +14,10 @@ import ManageProducts from "./admin/ManageProducts";
 import EditProduct from "./admin/EditProduct";
 import AdminDashboard from "./admin/AdminDashboard";
 import ProductDetails from "./pages/ProductDetails";
+import Checkout  from "./pages/Checkout";
+import AddAddress from "./pages/AddAddress";
+import Payment from "./pages/Payment";
+import OrderSuccess from "./pages/OrderSuccess";
 import Cart from "./pages/Cart";
 
 function App() {
@@ -57,6 +61,24 @@ function App() {
 			    path="/cart"
 			    element={<Cart />}
 			/>
+			<Route
+			    path="/checkout"
+			    element={<Checkout />}
+			/>
+				
+	    	<Route
+			  path="/add-address"
+		      element={<AddAddress />}
+			/>	
+			<Route
+			    path="/payment"
+			    element={<Payment />}
+			/>	
+			<Route
+			    path="/order-success"
+			    element={<OrderSuccess />}
+			/>	
+		
             {/* ================= ADMIN ================= */}
 
             {/* Admin Login - Public */}

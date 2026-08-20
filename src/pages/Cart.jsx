@@ -20,10 +20,23 @@ function Cart() {
     }, []);
 
 
+	const user = JSON.parse(
+	    localStorage.getItem("user")
+	);
+
+	const cartKey = user
+	    ? `cart_${user.id}`
+	    : null;
+
+	/*const savedCart =
+	    JSON.parse(
+	        localStorage.getItem(cartKey)
+	    ) || [];*/
+	
     const loadCart = () => {
 
         const savedCart =
-            JSON.parse(localStorage.getItem("cart")) || [];
+            JSON.parse(localStorage.getItem(cartKey)) || [];
 
         setCart(savedCart);
 
@@ -55,7 +68,7 @@ function Cart() {
         setCart(updatedCart);
 
         localStorage.setItem(
-            "cart",
+           cartKey,
             JSON.stringify(updatedCart)
         );
 
@@ -90,7 +103,7 @@ function Cart() {
         setCart(updatedCart);
 
         localStorage.setItem(
-            "cart",
+           cartKey,
             JSON.stringify(updatedCart)
         );
 
@@ -110,7 +123,7 @@ function Cart() {
         setCart(updatedCart);
 
         localStorage.setItem(
-            "cart",
+           cartKey,
             JSON.stringify(updatedCart)
         );
 
